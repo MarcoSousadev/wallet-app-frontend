@@ -62,6 +62,7 @@ button{
   border-width: 2px;
   border-color:  #5936cd;
   border-style: solid;
+  cursor: pointer;
 }
 
 button.small{
