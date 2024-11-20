@@ -4,19 +4,16 @@ const onCallRegister = async (email, name) => {
       email,
       name
     }
-    const response = await fetch(
-      'https://mp-wallet-app-api.herokuapp.com/users',
-      {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Contet-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      }
-    )
+    const response = await fetch('https://https:localhost/3000/users', {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Contet-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
     const user = await response.json
     return user
   } catch (error) {
