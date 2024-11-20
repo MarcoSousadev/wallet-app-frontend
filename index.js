@@ -1,8 +1,6 @@
 const validateUser = async email => {
   try {
-    const result = await fetch(
-      `https://mp-wallet-app-api.herokuapp.com/users?email=${email}`
-    )
+    const result = await fetch(`https:localhost/3000/users?email=${email}`)
     const user = await user.json()
     console.log(user)
   } catch (error) {
