@@ -27,6 +27,22 @@
   height: 24px;
   width: auto;
 }
+
+.navbar-calendar-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 260px;
+  justify-content: center;
+}
+.input-calendar{
+  text-align: center;
+  width: 156px;
+  height: 42px;
+  font-size: 16px;
+  font-weight: bold;
+
+}
 .navbar-user-container{
   display: flex;
   flex-direction: row;
@@ -109,6 +125,10 @@ th{
   color: #7c7c7c;
 }
 
+tr {
+  height: 32px;
+}
+
 th.right{
   text-align: right;
 }
@@ -128,4 +148,37 @@ td.center{
 }
 td.right{
   text-align: right;
+}
+
+.modal-backgroud{
+  display: none;
+  flex-direction: column;
+  align-items: flex-end;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(1, 4, 0, 0.2);
+  
+}
+
+.modal-content{
+  width: 480px;
+  height: 100vh;
+  background-color: #f4f4f9;
+  padding: 24px;
+  box-sizing: border-box;
+
+}
+
+.modal-content-header{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  
 }

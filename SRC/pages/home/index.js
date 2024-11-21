@@ -1,5 +1,59 @@
+const onLogout = () => {
+  localStorage.clear()
+  window.open('../../../index.html', '_self')
+}
+
+const onDeleteItem = async () => {
+  try {
+    const email = localStorage.getItem('@WalletApp:userEmail')
+    await fetch(`https://mp-wallet-app-api.herokuapp.com/finances/${id}`, {
+      method: 'DELETE',
+      headers: {
+        email: email
+      }
+    })
+
+    onloadFinancesData()
+  } catch (error) {
+    alert('Error ao deletar Item')
+  }
+}
+
 const renderFinancesList = data => {
   const table = document.getElementById('finances-table')
+  table.innerHTML = ''
+
+  const tableHeader = document.createElement('tr')
+
+  const titleText = document.createTextNode('Título')
+  const titleElement = document.createElement('th')
+  titleElement.appendChild(titleText)
+  tableHeader.appendChild(titleElement)
+
+  const categoryText = document.createTextNode('Categoria')
+  const categoryElement = document.createElement('th')
+  titleElement.appendChild(categoryText)
+  tableHeader.appendChild(categoryElement)
+
+  const dateText = document.createTextNode('Data')
+  const dateElement = document.createElement('th')
+  titleElement.appendChild(dateText)
+  tableHeader.appendChild(dateElement)
+
+  const valueText = document.createTextNode('Valor')
+  const valueElement = document.createElement('th')
+  valueElement.className = 'center'
+  titleElement.appendChild(valueText)
+  tableHeader.appendChild(valueElement)
+
+  const actionText = document.createTextNode('Ação')
+  const actionElement = document.createElement('th')
+  valueElement.className = 'right'
+  titleElement.appendChild(actionText)
+  tableHeader.appendChild(actionElement)
+
+  tableHeader.appendChild(tableHeader)
+
   data.map(item => {
     const tableRow = document.createElement('tr')
     tableRow.className = 'mt smaller'
@@ -43,6 +97,8 @@ const renderFinancesList = data => {
     // delete
 
     const deleteTd = document.createElement('td')
+    deleteTd.style.cursos = 'pointer'
+    deleteTd.onclick = () => onDeleteItem(item.id)
     deleteTd.className = 'right'
     const deleteText = document.createTextNode('Deletar')
     deleteTd.appendChild(deleteText)
@@ -66,15 +122,30 @@ const renderFinanceElements = () => {
   //  render total itens
 
   const financeCard1 = document.getElementById('finance-card-1')
+  financeCard1.innerHTML = ''
+
+  const totalSubText = document.createTextNode('Total de lançamentos')
+  const totalSubTextElement = document.createElement('h3')
+  totalSubTextElement.appendChild(totalSubText)
+  financeCard1.appendChild(totalSubTextElement)
+
   const totalText = document.createTextNode(totalItens)
   const totalElement = document.createElement('h1')
-  totalElement.className = ' mt smaller'
+  totalElement.id = 'total-element'
+  totalElement.className = 'mt smaller'
   totalElement.appendChild(totalText)
   financeCard1.appendChild(totalElement)
 
   //  render revenue
 
-  const financeCard2 = document.getElementById('finance-card-1')
+  const financeCard2 = document.getElementById('finance-card-2')
+  financeCard2.innerHTML = ''
+
+  const revenueSubText = document.createTextNode('Receitas')
+  const revenueSubTextElement = document.createElement('h3')
+  revenueSubTextElement.appendChild(revenueSubText)
+  financeCard2.appendChild(revenueSubTextElement)
+
   const revenueText = document.createTextNode(
     new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -82,13 +153,20 @@ const renderFinanceElements = () => {
     }).format(revenues)
   )
   const revenueTextElement = document.createElement('h1')
-  revenueTextElement.className = ' mt smaller'
+  revenueTextElement.id = 'revenue-element'
+  revenueTextElement.className = 'mt smaller'
   revenueTextElement.appendChild(revenueText)
   financeCard2.appendChild(revenueTextElement)
 
   // render expenses
 
-  const financeCard3 = document.getElementById('finance-card-1')
+  const financeCard3 = document.getElementById('finance-card-3')
+  financeCard3.innerHTML = ''
+  const expensesSubText = document.createTextNode('Despesas')
+  const expensesSubTextElement = document.createElement('h3')
+  revenueSubTextElements.appendChild(expensesSubText)
+  financeCard3.appendChild(expensesSubTextElement)
+
   const expensesText = document.createTextNode(
     new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -96,13 +174,21 @@ const renderFinanceElements = () => {
     }).format(expenses)
   )
   const expensesTextElement = document.createElement('h1')
-  expensesTextElement.className = ' mt smaller'
+  expensesTextElement.id = 'expenses-element'
+  expensesTextElement.className = 'mt smaller'
   expensesTextElement.appendChild(expensesText)
   financeCard3.appendChild(expensesTextElement)
 
-  // render total
+  // render balance
 
-  const financeCard4 = document.getElementById('finance-card-1')
+  const financeCard4 = document.getElementById('finance-card-4')
+  financeCard4.innerHTML = ''
+
+  const balanceSubText = document.createTextNode('Balanço')
+  const balanceSubTextElement = document.createElement('h3')
+  revenueSubTextElement.appendChild(balanceSubText)
+  financeCard4.appendChild(balanceSubTextElement)
+
   const balanceText = document.createTextNode(
     new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -111,7 +197,8 @@ const renderFinanceElements = () => {
   )
 
   const balanceTextElement = document.createElement('h1')
-  balanceTextElement.className = ' mt smaller'
+  balanceTextElement.id = 'balance-element'
+  balanceTextElement.className = 'mt smaller'
   balanceTextElement.style.color = '#5936CD'
   balanceTextElement.appendChild(balanceText)
   financeCard4.appendChild(balanceTextElement)
@@ -119,15 +206,15 @@ const renderFinanceElements = () => {
 
 const onloadFinancesData = async () => {
   try {
+    const dateInputValue = document.getElementById('select-date').value
+
     const email = localStorage.getItem('@WalletApp:userEmail')
-    const date = '2022-12-15'
     const result = await fetch(
-      `
-      https://mp-wallet-app-api.herokuapp.com/finances?date=${date}`,
+      `https://mp-wallet-app-api.herokuapp.com/finances?date=${dateInputValue}`,
       {
         method: 'GET',
         headers: {
-          email
+          email: email
         }
       }
     )
@@ -159,6 +246,8 @@ const onLoadUserInfo = () => {
   // add logout link
 
   const logoutElement = document.createElement('a')
+  logoutElement.onclick = () => onLogout()
+  logoutElement.style.cursor = 'pointer'
   const logoutText = document.createTextNode('sair')
   logoutElement.appendChild(logoutText)
   navbarUserInfo.appendChild(logoutElement)
@@ -171,7 +260,101 @@ const onLoadUserInfo = () => {
   navbarUserAvatar.appendChild(nameElement)
 }
 
+const onLoadCategories = async () => {
+  try {
+    const categoriesSelect = document.getElementById('input-category')
+    const response = await fetch(
+      'https://mp-wallet-app-api.herokuapp.com/categories'
+    )
+    const categoriesResult = await response.json()
+    categoriesResult.map(category => {
+      const option = document.createElement('option')
+      const categoryText = document.createTextNode(category.name)
+      option.id = `category_${category.id}`
+      option.value = category.id
+      option.appendChild(categoryText)
+      categoriesSelect.appendChild(option)
+    })
+  } catch (error) {
+    alert('Error ao carregar categorias')
+  }
+}
+
+const onOpenModal = () => {
+  const modal = document.getElementById('modal')
+  modal.style.display = 'flex'
+}
+
+const onCloseModal = () => {
+  const modal = document.getElementById('modal')
+  modal.style.display = 'none'
+}
+
+const onCallAddFinance = async data => {
+  try {
+    const email = localStorage.getItem('@WalletApp:userEmail')
+
+    const response = await fetch(
+      'https://mp-wallet-app-api.herokuapp.com/finances',
+      {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+          email: email
+        },
+        body: JSON.stringify(data)
+      }
+    )
+    const user = await response.json
+    return user
+  } catch (error) {
+    return { error }
+  }
+}
+
+const onCreateFinanceRelease = async target => {
+  try {
+    const title = target[0].value
+    const value = Number(target[1].value)
+    const date = target[2].value
+    const category = Number(target[3].value)
+    const result = await onCallAddFinance({
+      title,
+      value,
+      date,
+      category_id: category
+    })
+    if (result.erro) {
+      alert('Error ao adicionar novo dado financeiro')
+      return
+    }
+    onCloseModal()
+  } catch (error) {
+    alert('Error ao adicionar novo dado financeiro.')
+  }
+}
+const setInitialDate = () => {
+  const dateInput = document.getElementById('select-date')
+  const nowDate = new Date().toISOString().split('T')[0]
+  dateInput.value = nowDate
+  dateInput.addEventListener('change', () => {
+    onloadFinancesData()
+  })
+}
+
 window.onload = () => {
+  setInitialDate()
   onLoadUserInfo()
   onloadFinancesData()
+  onLoadCategories()
+
+  const form = document.getElementById('form-finance-release')
+  form.onsubmit = event => {
+    event.preventDefault()
+
+    onCreateFinanceRelease(event.target)
+  }
 }

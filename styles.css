@@ -86,6 +86,21 @@ input{
   font-size: 16px;
   padding: 6px;
   box-sizing: border-box;
+  margin-bottom: 12px;
+}
+
+select{
+  background-color: #f4f4f9;
+  height: 48px;
+  width: 100%;
+  border-color: #06bee1;
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 2px;
+  color: #010400;
+  font-size: 16px;
+  padding: 6px;
+  box-sizing: border-box;
 }
 
 .full-width{
