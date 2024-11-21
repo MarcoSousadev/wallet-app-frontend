@@ -3,7 +3,7 @@ const onLogout = () => {
   window.open('../../../index.html', '_self')
 }
 
-const onDeleteItem = async () => {
+const onDeleteItem = async id => {
   try {
     const email = localStorage.getItem('@WalletApp:userEmail')
     await fetch(`https://mp-wallet-app-api.herokuapp.com/finances/${id}`, {
@@ -19,8 +19,8 @@ const onDeleteItem = async () => {
   }
 }
 
-const renderFinancesList = data => {
-  const table = document.getElementById('finances-table')
+const renderFinanceList = data => {
+  const table = document.getElementById('finances-tables')
   table.innerHTML = ''
 
   const tableHeader = document.createElement('tr')
@@ -32,18 +32,18 @@ const renderFinancesList = data => {
 
   const categoryText = document.createTextNode('Categoria')
   const categoryElement = document.createElement('th')
-  titleElement.appendChild(categoryText)
+  categoryElement.appendChild(categoryText)
   tableHeader.appendChild(categoryElement)
 
   const dateText = document.createTextNode('Data')
   const dateElement = document.createElement('th')
-  titleElement.appendChild(dateText)
+  dateElement.appendChild(dateText)
   tableHeader.appendChild(dateElement)
 
   const valueText = document.createTextNode('Valor')
   const valueElement = document.createElement('th')
   valueElement.className = 'center'
-  titleElement.appendChild(valueText)
+  valueElement.appendChild(valueText)
   tableHeader.appendChild(valueElement)
 
   const actionText = document.createTextNode('Ação')
@@ -52,7 +52,7 @@ const renderFinancesList = data => {
   titleElement.appendChild(actionText)
   tableHeader.appendChild(actionElement)
 
-  tableHeader.appendChild(tableHeader)
+  table.appendChild(tableHeader)
 
   data.map(item => {
     const tableRow = document.createElement('tr')
@@ -61,14 +61,14 @@ const renderFinancesList = data => {
     // Title
 
     const titleTd = document.createElement('td')
-    const titleText = document.createElement(item.title)
+    const titleText = document.createTextNode(item.title)
+
     titleTd.appendChild(titleText)
     tableRow.appendChild(titleTd)
-
     // category
 
     const categoryTd = document.createElement('td')
-    const categoryText = document.createElement(item.name)
+    const categoryText = document.createTextNode(item.name)
     categoryTd.appendChild(categoryText)
     tableRow.appendChild(categoryTd)
 
@@ -97,19 +97,18 @@ const renderFinancesList = data => {
     // delete
 
     const deleteTd = document.createElement('td')
-    deleteTd.style.cursos = 'pointer'
+    deleteTd.style.cursor = 'pointer'
     deleteTd.onclick = () => onDeleteItem(item.id)
     deleteTd.className = 'right'
     const deleteText = document.createTextNode('Deletar')
     deleteTd.appendChild(deleteText)
     tableRow.appendChild(deleteTd)
-
     // table add tablerow
     table.appendChild(tableRow)
   })
 }
 
-const renderFinanceElements = () => {
+const renderFinanceElements = data => {
   const totalItens = data.length
   const revenues = data
     .filter(item => Number(item.value) > 0)
@@ -118,6 +117,8 @@ const renderFinanceElements = () => {
     .filter(item => Number(item.value) < 0)
     .reduce((acc, item) => acc + Number(item.value), 0)
   const totalValue = revenues + expenses
+
+  console.log({ totalValue, totalItens, revenues, expenses })
 
   //  render total itens
 
@@ -164,7 +165,7 @@ const renderFinanceElements = () => {
   financeCard3.innerHTML = ''
   const expensesSubText = document.createTextNode('Despesas')
   const expensesSubTextElement = document.createElement('h3')
-  revenueSubTextElements.appendChild(expensesSubText)
+  expensesSubTextElement.appendChild(expensesSubText)
   financeCard3.appendChild(expensesSubTextElement)
 
   const expensesText = document.createTextNode(
@@ -186,7 +187,7 @@ const renderFinanceElements = () => {
 
   const balanceSubText = document.createTextNode('Balanço')
   const balanceSubTextElement = document.createElement('h3')
-  revenueSubTextElement.appendChild(balanceSubText)
+  balanceSubTextElement.appendChild(balanceSubText)
   financeCard4.appendChild(balanceSubTextElement)
 
   const balanceText = document.createTextNode(
@@ -220,8 +221,9 @@ const onloadFinancesData = async () => {
     )
 
     const data = await result.json()
+
     renderFinanceElements(data)
-    renderFinancesList(data)
+    renderFinanceList(data)
     return data
   } catch (error) {
     return { error }
